@@ -4,13 +4,14 @@ import pickle
 from game import Game
 from Deck import *
 
-server = "192.168.1.223"
+server = "192.168.1.96"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    s.bind((server, port))
+    s.bind(('', port))
+    #s.bind((server, port))
 except socket.error as e:
     str(e)
 
