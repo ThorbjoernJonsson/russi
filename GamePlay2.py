@@ -3,8 +3,6 @@ from graphics import *
 import time
 import random
 from Deck import*
-from Button import*
-from Texts import*
 import time
 from network import Network
 import pygame
@@ -144,13 +142,31 @@ def main():
 
     width = 1250
     height = 625
+    grey = (192, 192, 192)
+    white = (255, 255, 255)
+    green = (0, 255, 0)
+    blue = (0, 0, 128)
     win = pygame.display.set_mode((width, height))
-    win.fill((192, 192, 192))
+    win.fill(grey)
 
     pygame.display.set_caption("Russi")
 
     for btn in btns:
         btn.draw(win)
+
+    Color_line = (255, 0, 0)
+    y_place_line = int((deal['y'] + leave['y'])/2 + 22)
+    pygame.draw.line(win, Color_line, (deal['x'], y_place_line), (deal['x']+1200, y_place_line), 4)
+
+    font = pygame.font.Font('freesansbold.ttf', 18)
+    text0 = font.render('Player 0', True, blue, grey)
+    text1 = font.render('Player 1', True, blue, grey)
+    textRect0 = text0.get_rect()
+    textRect1 = text1.get_rect()
+    textRect0.center = (deal['x']+40, y_place_line - 30)
+    textRect1.center = (deal['x'] + 40, y_place_line + 30)
+    win.blit(text0, textRect0)
+    win.blit(text1, textRect1)
     pygame.display.update()
 
 
@@ -173,7 +189,21 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
+
+
+                if pos[0] >= game.deck_p1[0][1][0] and pos[0] <= game.deck_p1[0][1][0] + 70 and pos[1] >= game.deck_p1[0][1][1] and \
+                    pos[1] <= game.deck_p1[0][1][1] + 95:
+                    img = pygame.image.load("cards_gif/" + game.deck_p1[0][0] + ".gif")
+                    win.blit(img, (1000, y_place_line - 110))
+                    pygame.display.update()
+
+
+
+
+                
                 if btns[0].click(pos):
+                    for i in range(52):
+                        print (game.deck_p1[i])
                     if player == 0:
                         for i in range(52):
                             if game.deck_p1[i][2]:
