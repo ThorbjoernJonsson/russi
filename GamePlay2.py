@@ -6,7 +6,9 @@ from Deck import*
 import time
 from network import Network
 import pygame
+import pickle
 pygame.font.init()
+
 
 class Button:
     def __init__(self, text, x, y, color, w, h):
@@ -31,121 +33,34 @@ class Button:
         else:
             return False
 
-class Game():
-    def __init__(self):
-        self.deck = self.get_random_deck()
-        #self.p1, self.p2 = self.create_decks(win)
 
-    def get_random_deck(self):
-        deck = Deck()
-        for i in range(3):
-            deck.Shuffle()
-        return deck
+width = 1250
+height = 625
+grey = (192, 192, 192)
+white = (255, 255, 255)
+green = (0, 255, 0)
+blue = (0, 0, 128)
+deal = {'w': 120, 'h': 60, 'x':30, 'y':30}
+leave = {'w': 120, 'h': 60, 'x':30, 'y':550}
+btns = [Button("Deal", deal['x'], deal['y'], (0, 250, 0), deal['w'], deal['h']),
+        Button("Quit", leave['x'], leave['y'], (255, 0, 0), leave['w'], leave['h']),
+        Button("Submit 1", 30, 110, (0, 255, 0), 120, 60), Button("Submit 2", 30, 470, (0, 255, 0), 120, 60)]
+Color_line = (255, 0, 0)
+y_place_line = int((deal['y'] + leave['y'])/2 + 22)
+font = pygame.font.Font('freesansbold.ttf', 18)
+text0 = font.render('Player 0', True, blue, grey)
+text1 = font.render('Player 1', True, blue, grey)
+textRect0 = text0.get_rect()
+textRect1 = text1.get_rect()
+textRect0.center = (deal['x']+40, y_place_line - 30)
+textRect1.center = (deal['x'] + 40, y_place_line + 30)
 
-    def create_decks(self):
-        player_1 = {}
-        player_2 = {}
-        index = 0
-        down = False
-        second_line = 0
-        counter = 0
+def redrawWindow(win, game, p):
+    return 1
 
-        for_deck_1 = True
-        for i in range(16):
-            location = Point(122 + 25 * counter, 17 + second_line)
-            card = self.dealCard(self.deck, location, down)
-            if for_deck_1:
-                player_1[index] = [card, location, False]
-                player_2[index] = [card, location, True]
-                index += 1
-            else:
-                player_1[index] = [card, location, True]
-                player_2[index] = [card, location, False]
-                index += 1
-            if i == 7:
-                second_line = 165
-                counter = -1
-                for_deck_1 = False
-            counter += 1
-
-        new_line = 0
-        counter = 0
-        down = True
-        for i in range(18):
-            if down:
-                location = Point(121 + 40 * counter, 50 + new_line)
-            else:
-                location = Point(125 + 40 * counter, 50 + new_line)
-                counter += 1
-
-            if i == 9:
-                new_line = 30
-                counter = 0
-            card = self.dealCard(self.deck, location, down)
-            player_1[index] = [card, location, down]
-            player_2[index] = [card, location, down]
-            index += 1
-            down = not down
-
-        counter = 0
-        new_line = 0
-        for i in range(18):
-            if down:
-                location = Point(121 + 40 * counter, 120 + new_line)
-            else:
-                location = Point(125 + 40 * counter, 120 + new_line)
-                counter += 1
-
-            if i == 7:
-                new_line = 30
-                counter = 0
-            card = self.dealCard(self.deck, location, down)
-            player_1[index] = [card, location, down]
-            player_2[index] = [card, location, down]
-            index += 1
-            down = not down
-        return player_1, player_2
-
-
-    def dealCard(self, deck, location, down):
-        """Deals a card, draws it and adds it to the dealtCards list, then returns the card, score (value) and the list of total cards"""
-        value = deck.Deal()
-        card = Card(value,location, down)
-        return card
-
-    def clearfromTable(self, dealtCards):
-        """Clears all the cards on the table"""
-        dealtCards.Undraw()
-
-    def re_draw_card(self, curr_card, location):
-        value = curr_card.value
-        curr_card.card = curr_card.drawCard(value, location, False)
-        win = curr_card.win
-        curr_card.re_drawCard(win)
-
-    def draw_card(self, win, curr_card, location, down):
-        value = curr_card.value
-        curr_card.card = curr_card.drawCard(value, location, down)
-        #win = curr_card.win
-        curr_card.re_drawCard(win)
-    def draw_all_cards(self, win, cards):
-        for item in cards:
-            self.draw_card(win, cards[item][0], cards[item][1], cards[item][2])
 
 def main():
-    deal = {'w': 120, 'h': 60, 'x':30, 'y':30}
-    leave = {'w': 120, 'h': 60, 'x':30, 'y':550}
-    btns = [Button("Deal", deal['x'], deal['y'], (0, 250, 0), deal['w'], deal['h']),
-            Button("Quit", leave['x'], leave['y'], (255, 0, 0), leave['w'], leave['h']),
-            Button("Submit 1", 30, 110, (0, 255, 0), 120, 60), Button("Submit 2", 30, 470, (0, 255, 0), 120, 60)]
 
-
-    width = 1250
-    height = 625
-    grey = (192, 192, 192)
-    white = (255, 255, 255)
-    green = (0, 255, 0)
-    blue = (0, 0, 128)
     win = pygame.display.set_mode((width, height))
     win.fill(grey)
 
@@ -154,26 +69,16 @@ def main():
     for btn in btns:
         btn.draw(win)
 
-    Color_line = (255, 0, 0)
-    y_place_line = int((deal['y'] + leave['y'])/2 + 22)
     pygame.draw.line(win, Color_line, (deal['x'], y_place_line), (deal['x']+1200, y_place_line), 4)
 
-    font = pygame.font.Font('freesansbold.ttf', 18)
-    text0 = font.render('Player 0', True, blue, grey)
-    text1 = font.render('Player 1', True, blue, grey)
-    textRect0 = text0.get_rect()
-    textRect1 = text1.get_rect()
-    textRect0.center = (deal['x']+40, y_place_line - 30)
-    textRect1.center = (deal['x'] + 40, y_place_line + 30)
     win.blit(text0, textRect0)
     win.blit(text1, textRect1)
     pygame.display.update()
 
-
-
     run = True
     clock = pygame.time.Clock()
     n = Network()
+    p1 = n.getP()
     player = int(n.getP())
     print ('You are player', player)
 
@@ -196,14 +101,20 @@ def main():
                     img = pygame.image.load("cards_gif/" + game.deck_p1[0][0] + ".gif")
                     win.blit(img, (1000, y_place_line - 110))
                     pygame.display.update()
+                    game.deck_p1[0][1] = (1000, y_place_line - 110)
+                    game.deck_p2[0][1] = (1000, y_place_line - 110)
+                    game.deck_p2[0][2] = False
+                    n.send(str(game.deck_p1[0][1][0]) + ','+ str(game.deck_p1[0][1][1]))
+                    #n.send(game.deck_p1)
+                    #data_string = pickle.dumps(str(game.deck_p1[0][1][0]) + ','+ str(game.deck_p1[0][1][1]))
+                    #print (data_string)
+                    #n.send(data_string)
 
 
 
 
-                
+
                 if btns[0].click(pos):
-                    for i in range(52):
-                        print (game.deck_p1[i])
                     if player == 0:
                         for i in range(52):
                             if game.deck_p1[i][2]:
@@ -226,7 +137,14 @@ def main():
                 elif btns[2].click(pos) and game.connected():
                         n.send('player 0')
                 elif btns[3].click(pos) and game.connected():
-                        n.send('player 1')
+                    print ('reupdate')
+                    for i in range(52):
+                        if game.deck_p2[i][2]:
+                            img = pygame.image.load("cards_gif/b1fv.gif")
+                        else:
+                            img = pygame.image.load("cards_gif/" + game.deck_p2[i][0] + ".gif")
+                        win.blit(img, game.deck_p2[i][1])
+                    pygame.display.update()
     #time.sleep(15)
 
 if __name__ == "__main__":
