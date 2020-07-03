@@ -72,6 +72,9 @@ class Game:
 
         return player_1, player_2
 
+    def move_card(self):
+        return 1
+
     def get_player_move(self, p):
         """
         :param p: [0,1]
@@ -79,12 +82,12 @@ class Game:
         """
         return self.moves[p]
 
-    def play(self, player, move):
-        self.moves[player] = move
-        if player == 0:
-            self.p1Went = True
-        else:
-            self.p2Went = True
+    def play(self, card):
+        temp = card.split(',')
+        self.deck_p1[0][1] = (int(temp[0]), int(temp[1]))
+        self.deck_p2[0][1] = (int(temp[0]), int(temp[1]))
+        self.deck_p2[0][2] = False
+
 
     def connected(self):
         return self.ready
