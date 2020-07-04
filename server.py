@@ -23,7 +23,7 @@ games = {}
 idCount = 0
 
 
-def threaded_client(conn, p, gameId, deck):
+def threaded_client(conn, p, gameId):
     global idCount
     conn.send(str.encode(str(p)))
 
@@ -42,13 +42,15 @@ def threaded_client(conn, p, gameId, deck):
                         game.resetWent()
                     elif data == "False":
                         game.not_redraw()
+                    elif data == "draw":
+                        deck2 = Deck()
+                        deck2.Shuffle()
+                        game.reset_game(deck2)
                     elif data == "score":
                         game.update_score()
                     elif data == "first":
                         game.update_curr_player(p)
                     elif data[0:4] == "flip":
-                        print (data)
-                        print (p)
                         game.flip_card(data, p)
                     elif data != 'get':
                         game.play(data, p)
@@ -77,18 +79,12 @@ while True:
     p = 0
     gameId = (idCount - 1)//2
 
-    deck = Deck()
-    for i in range(3):
-        deck.Shuffle()
-
     if idCount % 2 == 1:
-        games[gameId] = Game(gameId, deck)
-        #deck = games[gameId].deck
+        games[gameId] = Game(gameId)
         print("Creating a new game...")
     else:
         games[gameId].ready = True
-        deck = games[gameId].deck
         p = 1
 
 
-    start_new_thread(threaded_client, (conn, p, gameId, deck))
+    start_new_thread(threaded_client, (conn, p, gameId))
