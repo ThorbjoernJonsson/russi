@@ -1,7 +1,7 @@
 from Deck import*
 import time
 class Game:
-    def __init__(self, id, deck):
+    def __init__(self, id):
         self.curr_player = 0
         self.ready = False
         self.id = id
@@ -10,14 +10,17 @@ class Game:
         self.card_to_flip = [False, False]
         self.score = [0,0]
         self.redraw = False
-        self.deck = deck
-        self.deck_p1, self.deck_p2 = self.cards_location(deck.shuffledcards)
+        self.deck_p1 = []
+        self.deck_p2 = []
 
-    def get_random_deck(self):
-        deck = Deck()
-        for i in range(3):
-            deck.Shuffle()
-        self.deck = deck
+    def reset_game(self, deck):
+        self.curr_player = 0
+        self.moves = [False, False]
+        self.last_combo = [False, False]
+        self.card_to_flip = [False, False]
+        self.redraw = True
+        self.score = [0, 0]
+        self.deck_p1, self.deck_p2 =  self.cards_location(deck.shuffledcards)
 
     def cards_location(self, deck):
         player_1 = {}
