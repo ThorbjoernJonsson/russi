@@ -40,15 +40,18 @@ def threaded_client(conn, p, gameId, deck):
                 else:
                     if data == "reset":
                         game.resetWent()
+                    elif data == "False":
+                        game.not_redraw()
+                    elif data == "score":
+                        game.update_score()
+                    elif data == "first":
+                        game.update_curr_player(p)
+                    elif data[0:4] == "flip":
+                        print (data)
+                        print (p)
+                        game.flip_card(data, p)
                     elif data != 'get':
-                        #print (game)
-                        game.play(data)
-                        #game.play(p,data)
-                    #elif data != "get":
-                     #   print (data)
-                      #  game.play(p, data)
-                      #  game.play(p, data)
-
+                        game.play(data, p)
                     conn.sendall(pickle.dumps(game))
             else:
                 break
