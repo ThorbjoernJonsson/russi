@@ -1,13 +1,15 @@
 from Deck import*
+import time
 class Game:
     def __init__(self, id, deck):
-        self.p1Went = False
-        self.p2Went = False
+        self.curr_player = 0
         self.ready = False
         self.id = id
-        self.moves = [None, None]
-        self.wins = [0,0]
-        self.ties = 0
+        self.moves = [False, False]
+        self.last_combo = [False, False]
+        self.card_to_flip = [False, False]
+        self.score = [0,0]
+        self.redraw = False
         self.deck = deck
         self.deck_p1, self.deck_p2 = self.cards_location(deck.shuffledcards)
 
@@ -72,50 +74,91 @@ class Game:
 
         return player_1, player_2
 
-    def move_card(self):
-        return 1
 
-    def get_player_move(self, p):
-        """
-        :param p: [0,1]
-        :return: Move
-        """
-        return self.moves[p]
-
-    def play(self, card):
+    def play(self, card, player):
         temp = card.split(',')
-        self.deck_p1[0][1] = (int(temp[0]), int(temp[1]))
-        self.deck_p2[0][1] = (int(temp[0]), int(temp[1]))
-        self.deck_p2[0][2] = False
+        self.deck_p1[int(temp[0])][1] = (int(temp[1]), int(temp[2]))
+        self.deck_p2[int(temp[0])][1] = (int(temp[1]), int(temp[2]))
+        self.deck_p1[int(temp[0])][2] = False
+        self.deck_p2[int(temp[0])][2] = False
+        self.redraw = True
+        self.moves[player] = self.deck_p1[int(temp[0])][0]
 
+    def not_redraw(self):
+        self.redraw = False
+
+    def update_curr_player(self, p):
+        self.curr_player = p
+
+    def flip_card(self, data, p):
+        temp = data.split(',')
+        self.card_to_flip[p] = int(temp[1])
 
     def connected(self):
         return self.ready
 
-    def bothWent(self):
-        return self.p1Went and self.p2Went
+    def update_score(self):
+        play_1_wins = False
+        if self.moves[0][0] == self.moves[1][0]:
+            vals = [0, 0]
+            for i in range(len(vals)):
+                if self.moves[i][1:].isdigit():
+                    vals[i] = int(self.moves[i][1:])
+                    if vals[i] == 1:
+                        vals[i] = 14
+                else:
+                    if self.moves[i][1:] == "j":
+                        vals[i] = 11
+                    elif self.moves[i][1:] == "q":
+                        vals[i] = 12
+                    else:
+                        vals[i] = 13
+            if vals[0] > vals[1]:
+                play_1_wins = True
+                self.score[0] += 1
+            else:
+                self.score[1] += 1
+        else:
+            self.score[self.curr_player] += 1
+            if self.curr_player == 0:
+                play_1_wins = True
 
-    def winner(self):
+        if self.last_combo[0]:
+            for i in range(len(self.deck_p1)):
+                if self.deck_p1[i][0] == self.last_combo[0]:
+                    self.deck_p1[i][2] = 2
+                    self.deck_p2[i][2] = 2
+                if self.deck_p1[i][0] == self.last_combo[1]:
+                    self.deck_p1[i][2] = 2
+                    self.deck_p2[i][2] = 2
 
-        p1 = self.moves[0].upper()[0]
-        p2 = self.moves[1].upper()[0]
+        if self.card_to_flip[0] != False:
+            val = self.card_to_flip[0]
+            self.deck_p1[val][2] = 0
+            self.deck_p2[val][2] = 0
+            self.card_to_flip[0] = False
+        if self.card_to_flip[1] != False:
+            val = self.card_to_flip[1]
+            self.deck_p1[val][2] = 0
+            self.deck_p2[val][2] = 0
+            self.card_to_flip[0] = False
 
-        winner = -1
-        if p1 == "R" and p2 == "S":
-            winner = 0
-        elif p1 == "S" and p2 == "R":
-            winner = 1
-        elif p1 == "P" and p2 == "R":
-            winner = 0
-        elif p1 == "R" and p2 == "P":
-            winner = 1
-        elif p1 == "S" and p2 == "P":
-            winner = 0
-        elif p1 == "P" and p2 == "S":
-            winner = 1
+        time.sleep(1)
 
-        return winner
+        coord_x = (910, 520)
+        coord_y = (1000, 520)
+        if play_1_wins:
+            coord_x = (910, 5)
+            coord_y = (1000, 5)
+        for i in range(len(self.deck_p1)):
+            if self.deck_p1[i][0] == self.moves[0]:
+                self.deck_p1[i][1] = coord_x
+                self.deck_p2[i][1] = coord_x
+            elif self.deck_p1[i][0] == self.moves[1]:
+                self.deck_p1[i][1] = coord_y
+                self.deck_p2[i][1] = coord_y
 
-    def resetWent(self):
-        self.p1Went = False
-        self.p2Went = False
+        self.last_combo[0] = self.moves[0]
+        self.last_combo[1] = self.moves[1]
+        self.moves[0] = False
+        self.moves[1] = False
