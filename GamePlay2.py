@@ -42,8 +42,7 @@ blue = (0, 0, 128)
 deal = {'w': 120, 'h': 60, 'x':30, 'y':30}
 leave = {'w': 120, 'h': 60, 'x':30, 'y':550}
 btns = [Button("Deal", deal['x'], deal['y'], (0, 250, 0), deal['w'], deal['h']),
-        Button("Quit", leave['x'], leave['y'], (255, 0, 0), leave['w'], leave['h']),
-        Button("Submit 1", 30, 110, (0, 255, 0), 120, 60), Button("Submit 2", 30, 470, (0, 255, 0), 120, 60)]
+        Button("Quit", leave['x'], leave['y'], (255, 0, 0), leave['w'], leave['h'])]
 Color_line = (255, 0, 0)
 y_place_line = int((deal['y'] + leave['y'])/2 + 22)
 font = pygame.font.Font('freesansbold.ttf', 18)
@@ -141,21 +140,9 @@ def main():
                                     n.send("first")
 
                 if btns[0].click(pos):
-                    if player == 0:
-                        for i in range(52):
-                            if game.deck_p1[i][2] == 1:
-                                img = pygame.image.load("cards_gif/b1fv.gif")
-                            elif game.deck_p1[i][2] == 0:
-                                img = pygame.image.load("cards_gif/" + game.deck_p1[i][0] + ".gif")
-                            win.blit(img, game.deck_p1[i][1])
-                    else:
-                        for i in range(52):
-                            if game.deck_p2[i][2] == 1:
-                                img = pygame.image.load("cards_gif/b1fv.gif")
-                            elif game.deck_p2[i][2] == 0:
-                                img = pygame.image.load("cards_gif/" + game.deck_p2[i][0] + ".gif")
-                            win.blit(img, game.deck_p2[i][1])
-                    pygame.display.update()
+                    n.send("draw")
+
+
                 elif btns[1].click(pos):
                     run = False
                     pygame.quit()
