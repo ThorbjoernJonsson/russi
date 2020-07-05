@@ -83,8 +83,5 @@ while True:
         games[gameId] = Game(gameId)
         print("Creating a new game...")
     else:
-        games[gameId].ready = True
         p = 1
-
-
     start_new_thread(threaded_client, (conn, p, gameId))
