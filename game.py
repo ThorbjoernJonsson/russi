@@ -1,9 +1,7 @@
-from Deck import*
 import time
 class Game:
     def __init__(self, id):
         self.curr_player = 0
-        self.ready = False
         self.id = id
         self.moves = [False, False]
         self.last_combo = [False, False]
@@ -12,6 +10,8 @@ class Game:
         self.redraw = False
         self.deck_p1 = []
         self.deck_p2 = []
+        self.num_sorts_p1 = [0, 0, 0, 0]
+        self.num_sorts_p2 = [0, 0, 0, 0]
 
     def reset_game(self, deck):
         self.curr_player = 0
@@ -21,6 +21,33 @@ class Game:
         self.redraw = True
         self.score = [0, 0]
         self.deck_p1, self.deck_p2 =  self.cards_location(deck.shuffledcards)
+        self.num_sorts_p1, self.num_sorts_p2 = self.num_on_hand(self.deck_p1, self.deck_p2)
+
+    def num_on_hand(self, deck_p1, deck_p2):
+        num_p1 = [0, 0, 0, 0]
+        num_p2 = [0, 0, 0, 0]
+        for i in range(len(deck_p1)):
+            if deck_p1[i][2] == 0 and (i <= 7 or (i >= 16 and i <= 33)):
+                if deck_p1[i][0][0] == 'h':
+                    num_p1[0] += 1
+                if deck_p1[i][0][0] == 's':
+                    num_p1[1] += 1
+                if deck_p1[i][0][0] == 'd':
+                    num_p1[2] += 1
+                if deck_p1[i][0][0] == 'c':
+                    num_p1[3] += 1
+            if deck_p2[i][2] == 0 and ((i >= 8 and i <= 15) or i >= 34):
+                if deck_p2[i][0][0] == 'h':
+                    num_p2[0] += 1
+                if deck_p2[i][0][0] == 's':
+                    num_p2[1] += 1
+                if deck_p2[i][0][0] == 'd':
+                    num_p2[2] += 1
+                if deck_p2[i][0][0] == 'c':
+                    num_p2[3] += 1
+        return num_p1, num_p2
+
+
 
     def cards_location(self, deck):
         player_1 = {}
@@ -87,6 +114,20 @@ class Game:
         self.redraw = True
         self.moves[player] = self.deck_p1[int(temp[0])][0]
 
+        card_sort = self.deck_p1[int(temp[0])][0][0]
+        number = 0
+        if card_sort == 's':
+            number = 1
+        elif card_sort == 'd':
+            number = 2
+        elif card_sort == 'c':
+            number = 3
+        if player == 0:
+            self.num_sorts_p1[number] -= 1
+        else:
+            self.num_sorts_p2[number] -= 1
+
+
     def not_redraw(self):
         self.redraw = False
 
@@ -95,7 +136,19 @@ class Game:
 
     def flip_card(self, data, p):
         temp = data.split(',')
-        self.card_to_flip[p] = int(temp[1])
+        num_card = int(temp[1])
+        self.card_to_flip[p] = num_card
+        card_sort = 0
+        if self.deck_p1[num_card][0][0] == 's':
+            card_sort = 1
+        elif self.deck_p1[num_card][0][0] == 'd':
+            card_sort = 2
+        elif self.deck_p1[num_card][0][0] == 'c':
+            card_sort = 3
+        if p == 0:
+            self.num_sorts_p1[card_sort] += 1
+        else:
+            self.num_sorts_p2[card_sort] += 1
 
     def connected(self):
         return self.ready
