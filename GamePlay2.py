@@ -71,11 +71,11 @@ def redrawWindow(win, deck, score):
             win.blit(img, deck[i][1])
     pygame.display.update()
 
-def text_has_sort(card_sort):
+def text_in_middle(text_to_display):
     win = pygame.display.set_mode((width, height))
     win.fill(grey)
-    font = pygame.font.Font('freesansbold.ttf', 40)
-    text_have_sort = font.render('You have ' + name_of_sorts[card_sort] + '!', True, red, grey)
+    font = pygame.font.Font('freesansbold.ttf', 60)
+    text_have_sort = font.render(text_to_display, True, red, grey)
     textRect_have_sort = text_have_sort.get_rect()
     textRect_have_sort.center = (deal['x'] + 400, y_place_line)
     win.blit(text_have_sort, textRect_have_sort)
@@ -123,6 +123,24 @@ def main():
             if player == 0:
                 n.send('score')
 
+        if game.num_cards_left == 0:
+            if game.score[0] > game.core[1]:
+                if player == 0:
+                    text_in_middle('You Win!')
+                else:
+                    text_in_middle('You Lose!')
+            elif game.score[0] < game.core[1]:
+                if player == 0:
+                    text_in_middle('You Lose!')
+                else:
+                    text_in_middle('You Win!')
+            else:
+                text_in_middle('It is a draw!')
+            time.sleep(2)
+            win = redrawWindow(win, game.deck_p1, game.score)
+
+
+
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
@@ -139,7 +157,7 @@ def main():
                                     player_2_sort = game.moves[1][0]
                                     if player_1_sort != player_2_sort and game.num_sorts_p1[num_for_sort[player_2_sort]] > 0:
                                         player_1_allowed = False
-                                        text_has_sort(player_2_sort)
+                                        text_in_middle('You have ' + name_of_sorts[player_2_sort] + '!')
                                         time.sleep(2)
                                         win = redrawWindow(win, game.deck_p1, game.score)
 
@@ -157,7 +175,7 @@ def main():
                                     player_1_sort = game.moves[0][0]
                                     if player_1_sort != player_2_sort and game.num_sorts_p2[num_for_sort[player_1_sort]] > 0:
                                         player_2_allowed = False
-                                        text_has_sort(player_1_sort)
+                                        text_in_middle('You have ' + name_of_sorts[player_1_sort] + '!')
                                         time.sleep(2)
                                         win = redrawWindow(win, game.deck_p2, game.score)
 
