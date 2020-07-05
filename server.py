@@ -1,3 +1,6 @@
+#File name: server.py
+#Runs the server on a local router.
+#Author Thorbjoern Jonsson
 import socket
 from _thread import *
 import pickle
@@ -11,7 +14,6 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
     s.bind(('', port))
-    #s.bind((server, port))
 except socket.error as e:
     str(e)
 
@@ -72,8 +74,6 @@ def threaded_client(conn, p, gameId):
         pass
     idCount -= 1
     conn.close()
-
-
 
 while True:
     conn, addr = s.accept()
