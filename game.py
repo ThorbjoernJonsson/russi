@@ -3,6 +3,7 @@ class Game:
     def __init__(self, id):
         self.curr_player = 0
         self.id = id
+        self.num_cards_left = 26
         self.moves = [False, False]
         self.last_combo = [False, False]
         self.card_to_flip = [False, False]
@@ -19,6 +20,7 @@ class Game:
         self.last_combo = [False, False]
         self.card_to_flip = [False, False]
         self.redraw = True
+        self.num_cards_left = 26
         self.score = [0, 0]
         self.deck_p1, self.deck_p2 =  self.cards_location(deck.shuffledcards)
         self.num_sorts_p1, self.num_sorts_p2 = self.num_on_hand(self.deck_p1, self.deck_p2)
@@ -218,3 +220,4 @@ class Game:
         self.last_combo[1] = self.moves[1]
         self.moves[0] = False
         self.moves[1] = False
+        self.num_cards_left -= 1
