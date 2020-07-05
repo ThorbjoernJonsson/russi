@@ -1,6 +1,8 @@
+#File name: network.py
+#When you need to send information to the server, network.py is used.
+#Author Thorbjoern Jonsson
 import socket
 import pickle
-
 
 class Network:
     def __init__(self):
