@@ -123,13 +123,14 @@ def main():
             if player == 0:
                 n.send('score')
 
-        if game.num_cards_left == 0:
-            if game.score[0] > game.core[1]:
+        if game.num_cards_left == 0 and game.show_results :
+            n.send("finished")
+            if game.score[0] > game.score[1]:
                 if player == 0:
                     text_in_middle('You Win!')
                 else:
                     text_in_middle('You Lose!')
-            elif game.score[0] < game.core[1]:
+            elif game.score[0] < game.score[1]:
                 if player == 0:
                     text_in_middle('You Lose!')
                 else:
@@ -161,11 +162,20 @@ def main():
                                         time.sleep(2)
                                         win = redrawWindow(win, game.deck_p1, game.score)
 
-                                if player_1_allowed:
+                                if game.next_play_player == -1:
+                                    n.send("next_play_player, 0")
+
+                                if game.next_play_player == 1:
+                                    text_in_middle('It is not your turn')
+                                    time.sleep(2)
+                                    win = redrawWindow(win, game.deck_p1, game.score)
+
+                                if player_1_allowed and game.next_play_player == 0:
                                     if i == 17 or i == 19 or i == 21 or i == 23 or i == 25 or i == 27 or i == 29 or \
                                         i == 31 or i == 33:
                                         n.send("flip," + str(i-1))
                                     n.send(str(i) + "," + str(1000) + "," + str(y_place_line - 110))
+                                    n.send("next_play_player, 1")
                                     if (not game.moves[0]) and (not game.moves[1]):
                                         n.send("first")
                         else:
@@ -179,11 +189,20 @@ def main():
                                         time.sleep(2)
                                         win = redrawWindow(win, game.deck_p2, game.score)
 
-                                if player_2_allowed:
+                                if game.next_play_player == -1:
+                                    n.send("next_play_player, 1")
+
+                                if game.next_play_player == 0:
+                                    text_in_middle('It is not your turn')
+                                    time.sleep(2)
+                                    win = redrawWindow(win, game.deck_p2, game.score)
+
+                                if player_2_allowed and game.next_play_player == 1:
                                     if i == 35 or i == 37 or i == 39 or i == 41 or i == 43 or i == 45 or i == 47 or \
                                         i == 49 or i == 51:
                                         n.send("flip," + str(i-1))
                                     n.send(str(i) + "," + str(1000) + "," + str(y_place_line + 30))
+                                    n.send("next_play_player, 0")
                                     if (not game.moves[0]) and (not game.moves[1]):
                                         n.send("first")
 
