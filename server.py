@@ -52,6 +52,10 @@ def threaded_client(conn, p, gameId):
                         game.update_curr_player(p)
                     elif data[0:4] == "flip":
                         game.flip_card(data, p)
+                    elif data == "finished":
+                        game.game_is_finished()
+                    elif data[0:16] == "next_play_player":
+                        game.update_next_play_player(data)
                     elif data != 'get':
                         game.play(data, p)
                     conn.sendall(pickle.dumps(game))
