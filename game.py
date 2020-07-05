@@ -2,6 +2,7 @@ import time
 class Game:
     def __init__(self, id):
         self.curr_player = 0
+        self.next_play_player = -1
         self.id = id
         self.num_cards_left = 26
         self.moves = [False, False]
@@ -9,6 +10,7 @@ class Game:
         self.card_to_flip = [False, False]
         self.score = [0,0]
         self.redraw = False
+        self.show_results = True
         self.deck_p1 = []
         self.deck_p2 = []
         self.num_sorts_p1 = [0, 0, 0, 0]
@@ -16,10 +18,12 @@ class Game:
 
     def reset_game(self, deck):
         self.curr_player = 0
+        self.next_play_player = -1
         self.moves = [False, False]
         self.last_combo = [False, False]
         self.card_to_flip = [False, False]
         self.redraw = True
+        self.show_results = True
         self.num_cards_left = 26
         self.score = [0, 0]
         self.deck_p1, self.deck_p2 =  self.cards_location(deck.shuffledcards)
@@ -49,7 +53,12 @@ class Game:
                     num_p2[3] += 1
         return num_p1, num_p2
 
+    def game_is_finished(self):
+        self.show_results = False
 
+    def update_next_play_player(self, data):
+        temp = data.split(",")
+        self.next_play_player = int(temp[1])
 
     def cards_location(self, deck):
         player_1 = {}
@@ -156,7 +165,8 @@ class Game:
         return self.ready
 
     def update_score(self):
-        play_1_wins = False
+        play_0_wins = False
+        self.next_play_player = 1
         if self.moves[0][0] == self.moves[1][0]:
             vals = [0, 0]
             for i in range(len(vals)):
@@ -172,14 +182,16 @@ class Game:
                     else:
                         vals[i] = 13
             if vals[0] > vals[1]:
-                play_1_wins = True
+                play_0_wins = True
+                self.next_play_player = 0
                 self.score[0] += 1
             else:
                 self.score[1] += 1
         else:
             self.score[self.curr_player] += 1
             if self.curr_player == 0:
-                play_1_wins = True
+                play_0_wins = True
+                self.next_play_player = 1
 
         if self.last_combo[0]:
             for i in range(len(self.deck_p1)):
@@ -205,7 +217,7 @@ class Game:
 
         coord_x = (910, 520)
         coord_y = (1000, 520)
-        if play_1_wins:
+        if play_0_wins:
             coord_x = (910, 5)
             coord_y = (1000, 5)
         for i in range(len(self.deck_p1)):
