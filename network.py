@@ -7,7 +7,10 @@ import pickle
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "192.168.1.96"
+        
+        #Open command prompt, type in ipconfig and take the number for IPv4 Address and type it for the server variable.
+        #The port is 5555 it is normally not used on a router.
+        self.server = "xxx.xxx.x.xx"
         self.port = 5555
         self.addr = (self.server, self.port)
         self.p = self.connect()
