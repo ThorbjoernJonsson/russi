@@ -7,6 +7,8 @@ import pickle
 from game import Game
 from Deck import *
 
+#Open command prompt, type in ipconfig and take the number for IPv4 Address and type it for the server variable.
+#The port is 5555 it is normally not used on a router.
 server = "192.168.1.96"
 port = 5555
 
