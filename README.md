@@ -8,7 +8,7 @@ One of the player runs server.py. Then both players run client.py. Then you have
 Following that, one of the players pushes the Deal button and the game starts. To put out a card, the player simply pushes the card, it's that simple!
 
 ## How the game works
-The card game Russi is a game I like playing a lot with my parents. It is simple but very strategic. Each player gets 8 cards on each end and can't show the other player. Then each player get's 18 cards on the table, 9 of the turn up and 9 turn down. The red line in the middle seperates player 0 from player 1. See pictures below. The picture above is the perspective of player 0 and the picture below is the perspective of player 1.
+The card game Russi is a game I like playing a lot with my parents. It is simple but very strategic. Each player gets 8 cards on each end and can't show the other player. Then each player get's 18 cards on the table, 9 of the turn up and 9 turn down. The red line in the middle seperates player 0 from player 1. See pictures below. The first picture below is the perspective of player 0 and the second picture is the perspective of player 1.
 
 ![Screenshot](pic1.JPG)
 
