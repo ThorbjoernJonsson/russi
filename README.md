@@ -1,9 +1,9 @@
 # russi
 
 ## To run the game
-First in the files server.py and network.py both players need ot change the server address to the address associated to the network. The players can find the address by opening Command Prompt, type in ipconfig and take the number for IPv4 Address.
+First in the files server.py and network.py both players need to change the server address to the address associated to the network. The players can find the address by opening Command Prompt, type in ipconfig and take the number for IPv4 Address.
 
-One of the player runs server.py. Then both players play client.py. Then you have the user interface up.
+One of the player runs server.py. Then both players run client.py. Then you have the user interface up.
 
 Following that, one of the players pushes the Deal button and the game starts. To put out a card, the player simply pushes the card, it's that simple!
 
